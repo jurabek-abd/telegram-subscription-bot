@@ -30,11 +30,16 @@ async def on_shutdown() -> None:
 
 @dp.message(CommandStart())
 async def cmd_start(message: Message) -> None:
+    """
+    Handle /start command.
+    """
     logger.info(f"User {message.from_user.id} started the bot")
     await message.answer("Hello!")
 
 
 async def main() -> None:
+    """
+    Main function."""
     bot = Bot(token=config.TELEGRAM_BOT_TOKEN)
     try:
         await dp.start_polling(bot)
@@ -46,6 +51,7 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    """Main entry point."""
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
