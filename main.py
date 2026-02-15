@@ -7,6 +7,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from config import config
+from database.repository import UserRepository
 
 logger.remove()
 logger.add(sink=sys.stderr, level="INFO")
@@ -34,7 +35,19 @@ async def cmd_start(message: Message) -> None:
     Handle /start command.
     """
     logger.info(f"User {message.from_user.id} started the bot")
-    await message.answer("Hello!")
+    user = await UserRepository.get_by_telegram_id(message.from_user.id)
+
+    if user is None:
+        logger.info(f"User {message.from_user.id} is new")
+        await UserRepository.create_user(
+            message.from_user.id, message.from_user.username
+        )
+    else:
+        logger.info(f"User {message.from_user.id} is already registered")
+        await message.answer("Welcome back!")
+        return
+
+    await message.answer("Hey There!")
 
 
 async def main() -> None:
